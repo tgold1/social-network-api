@@ -4,6 +4,7 @@ module.exports = {
     getUsers(req, res) {
         User.find()
         .populate('thoughts')
+        .populate('friends')
             .then((users) => res.json(users))
             .catch((err) => res.status(500).json(err));
     },
@@ -11,6 +12,7 @@ module.exports = {
     getSingleUser(req, res) {
         User.findOne({_id: req.params.userId})
             .populate('thoughts')
+            .populate('friends')
             .select('-__v')
             .then((user) => 
               !user
@@ -90,3 +92,5 @@ module.exports = {
            .catch((err) => res.status(500).json(err));
     },
 };
+
+module.exports = userController

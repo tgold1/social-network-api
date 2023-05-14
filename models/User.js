@@ -12,16 +12,26 @@ const userSchema = new Schema(
             type: String,
             unique: true,
             require: true,
-            validate: {
-                validator: function(v) {
-                    return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(v);
-                },
-                messaage: props => `${props.value} is not a valid email address!`
-            },
-            required: [true, 'User email required']
+            match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/]
         },
-        thoughts: [thoughtSchema],
-        friends: [userSchema],
+        thoughts: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Thought'
+            }
+        ],
+        friends: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        ],
+    },
+    {
+        toJSON: {
+            virtuals: true,
+        },
+        id: false,
     }
 );
 
@@ -31,6 +41,6 @@ userSchema
     return this.friends.length;
   });
 
-const User = model('user', userSchema);
+const User = model('User', userSchema);
 
 module.exports = User;

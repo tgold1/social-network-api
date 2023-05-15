@@ -1,6 +1,6 @@
 const { Thought, User } = require('../models');
 
-const thoughtController = {
+const thoughtControllers = {
     getThoughts(req, res) {
         Thought.find()
         .populate({path: 'reactions', select: '-__v'})
@@ -74,5 +74,5 @@ const thoughtController = {
     },
 };
 
-module.exports = thoughtController
+module.exports = thoughtControllers
 

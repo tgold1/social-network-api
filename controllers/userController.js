@@ -48,11 +48,11 @@ const userControllers = {
         .catch((err) => res.status(500).json(err));
     },
 
-    addFriend({params}, res) {
+    addFriend({params, }, res) {
         console.log('You are adding a friend!');
-        console.log(req.body);
+       // console.log(req.body);
         User.findOneAndUpdate(
-            { _id: params.userId },
+            { _id: params.userId }, 
             { $push: { friends: params.friendId }},
             { runValidators: true, new: true }
         )
@@ -67,7 +67,7 @@ const userControllers = {
             { _id: params.userId },
             { $pull: { friends: { friendId: params.friendId}}},
         )
-        .then(dbUserData => dbUserData ? res.json(dbUserData) : res.status(200).json({ message: 'Your friend has been successfully removed'}(params.friendId, 'User')))
+        .then(dbUserData => res.json(dbUserData)( "Your friend has been removed from your list"(params.friendId, 'User')))
               
            .catch((err) => res.status(500).json(err));
     },

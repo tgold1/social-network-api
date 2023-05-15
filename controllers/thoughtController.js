@@ -31,7 +31,7 @@ const thoughtControllers = {
 
     deleteThought({params}, res) {
         Thought.findOneAndDelete({_id: params.id })  
-          .then(dbThoughtData => dbThoughtData ? res.json({ message: 'Thought successfully deleted'}(dbThoughtData._id)) : res.status(404).json({ message: 'No thought with that ID'}))
+          .then(dbThoughtData => dbThoughtData ? res.json( 'Thought successfully deleted'(dbThoughtData._id)) : res.status(404).json({ message: 'No thought with that ID'(params.id)}))
            
     
       
@@ -40,7 +40,7 @@ const thoughtControllers = {
           );
     },
 
-    updateThought({params}, res) {
+    updateThought({params, body}, res) {
         Thought.findOneAndUpdate( {_id: params.id }, body, { new: true, runValidators: true})
         
           .then((dbThoughtData => dbThoughtData ? res.json(dbThoughtData) : res.status(404).json({ message: 'No thought with this ID!'} ))  
@@ -57,7 +57,7 @@ const thoughtControllers = {
             { $push: { reactions: {reactionBody: body.reactionBody, username: body.username} }},
             { runValidators: true, new: true }
         )
-          .then(dbThoughtData => dbThoughtData ? res.json(dbThoughtData) : res.status(404).json({ message: 'No thought found with that ID!'})
+          .then(dbThoughtData => dbThoughtData ? res.json(dbThoughtData) : res.status(404).json({ message: 'No thought found with that ID!'(params.id)})
     
           )
           .catch((err) => res.status(500).json(err));
@@ -66,10 +66,10 @@ const thoughtControllers = {
     removeReaction({params}, res) {
         Thought.findOneAndUpdate(
             { _id: params.thoughtId },
-            { $pull: { reactions: { _id: req.params.reactionId}}},
+            { $pull: { reactions: { _id: params.reactionId}}},
             { new: true }
         )
-           .then(dbThoughtData => dbThoughtData ? res.json(dbThoughtData) : res.status(404).json({ message: 'No thought found with that ID!'})
+           .then(dbThoughtData => dbThoughtData ? res.json("You have removed the reaction"(params.thoughtId)) : res.status(404).json({ message: 'No thought found with that ID!'})
            )
            .catch((err) => res.status(500).json(err));
     },

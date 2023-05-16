@@ -29,21 +29,24 @@ const thoughtControllers = {
           
     },
 
-    deleteThought({params}, res) {
-        Thought.findOneAndDelete({_id: params.id })  
-          .then(dbThoughtData => dbThoughtData ? res.json( 'Thought successfully deleted'(dbThoughtData._id)) : res.status(404).json({ message: 'No thought with that ID'(params.id)}))
+    deleteThought(req, res) {
+        Thought.findOneAndDelete({id: req.params.id })  
+          .then(dbThoughtData => dbThoughtData 
+            ? res.json({message: `Thought successfully deleted ${dbThoughtData._id}`})
+             : res.status(404).json({ message: `No thought with that ID${params.id}`}))
            
     
       
-          .catch((err) => 
+          .catch((err) => {
             res.status(500).json(err)
+          }
           );
     },
 
     updateThought({params, body}, res) {
         Thought.findOneAndUpdate( {_id: params.id }, body, { new: true, runValidators: true})
         
-          .then((dbThoughtData => dbThoughtData ? res.json(dbThoughtData) : res.status(404).json({ message: 'No thought with this ID!'} ))  
+          .then((dbThoughtData => dbThoughtData ? res.json(dbThoughtData._id) : res.status(404).json({ message: 'No thought with this ID!'} ))  
             
         )
         .catch((err) => res.status(500).json(err));
@@ -51,7 +54,7 @@ const thoughtControllers = {
 
     addReaction({params, body}, res) {
         console.log('You are adding a reaction');
-        console.log(req.body);
+       
         Thought.findOneAndUpdate(
             { _id: params.thoughtId },
             { $push: { reactions: {reactionBody: body.reactionBody, username: body.username} }},
@@ -69,8 +72,9 @@ const thoughtControllers = {
             { $pull: { reactions: { _id: params.reactionId}}},
             { new: true }
         )
-           .then(dbThoughtData => dbThoughtData ? res.json("You have removed the reaction"(params.thoughtId)) : res.status(404).json({ message: 'No thought found with that ID!'})
-           )
+        .then(dbThoughtData => res.json(dbThoughtData)( "Your reaction has been removed from your list"(params.reactionId, 'Thought')))
+         
+          
            .catch((err) => res.status(500).json(err));
     },
 };
